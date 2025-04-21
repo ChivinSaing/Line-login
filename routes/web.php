@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SalonController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LineAuthController;
 use App\Http\Controllers\AdminAuthController;
@@ -27,5 +28,7 @@ Route::get('/logout', [LineAuthController::class, 'logout']);
 Route::post('/admin/users/{user}/toggle-line-login', [UserPermissionController::class, 'toggleLineLogin'])
     ->name('admin.toggle-line-login')
     ->middleware('can:manage users');
+
+Route::get('/salon', [SalonController::class, 'showRegistrationForm'])->name('register.salon');
 
 

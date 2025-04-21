@@ -18,9 +18,34 @@ class LineAuthController extends Controller
 
     public function handleProviderCallback()
     {
-        $user = Socialite::driver('line')->user();
-        session(['line_user' => $user]);
-        return redirect()->route('home');
+        try {
+            // get user data from line
+            $user = Socialite::driver('line')->user();
+            session(['line_user' => $user]);
+//            dd($user, $user->id);
+            // find user in the database where the social id is the same with the id provided by Google
+            $findUser = User::where('provider_id', $user->id)->first();
+            // if user is found, login and redirect to home page
+            if($findUser){
+                Auth::login($findUser);
+                // redirect to home page
+                return redirect()->route('home');
+            }
+            // if user is not found, create new user
+            $newUser = User::create([
+                'email' => $user->email ?? 'noemail@gmail.com',
+                'name' => $user->name,
+                'provider_id' => $user->id,
+                'provider' => 'line',
+                'password' => bcrypt('my-password'),  // fill password by whatever pattern you choose
+            ]);
+
+            Auth::login($newUser);
+            return redirect(route('home'));
+
+        } catch (Exception $e) {
+            return redirect('/login/line');
+        }
     }
 
     public function home()
