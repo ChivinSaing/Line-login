@@ -36,10 +36,7 @@ class AdminAuthController extends Controller
     }
     public function dashboard()
     {
-        // $admin = session('line_user');
-        // if (!$admin) {
-        //     return redirect('/admin/login');
-        // }
+
         $salons = User::all();
         return view('admin.dashboard',compact('salons'));
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class LineAuthController extends Controller
             // get user data from line
             $user = Socialite::driver('line')->user();
             session(['line_user' => $user]);
-//            dd($user, $user->id);
+            //dd($user, $user->id);
             // find user in the database where the social id is the same with the id provided by Google
             $findUser = User::where('provider_id', $user->id)->first();
            
@@ -30,7 +31,7 @@ class LineAuthController extends Controller
             // $findUser->givePermissionTo('can_login_with_line');
             
             // if user is found, login and redirect to home page
-            if($findUser){
+            if($findUser && $findUser->is_verified){
                 // check if that user can login to our system
                 $findUser->givePermissionTo('can_login_with_line');
                 
@@ -54,8 +55,8 @@ class LineAuthController extends Controller
                 'password' => bcrypt('my-password'),  // fill password by whatever pattern you choose
             ]);
 
-            Auth::login($newUser);
-            return redirect(route('home'));
+            // Auth::login($newUser);
+            return redirect(route('register.salon'));
 
         } catch (Exception $e) {
             return redirect('/login/line');
