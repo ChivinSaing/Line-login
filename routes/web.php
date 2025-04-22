@@ -24,8 +24,5 @@ Route::get('/logout', [LineAuthController::class, 'logout']);
     Route::post('/admin/logout',[AdminAuthController::class,'logout'])->name('admin.logout');
 // });
 
-Route::post('/admin/users/{user}/toggle-line-login', [UserPermissionController::class, 'toggleLineLogin'])
-    ->name('admin.toggle-line-login')
-    ->middleware('can:manage users');
 
 
