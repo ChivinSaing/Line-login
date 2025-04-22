@@ -25,16 +25,30 @@ class LineAuthController extends Controller
 //            dd($user, $user->id);
             // find user in the database where the social id is the same with the id provided by Google
             $findUser = User::where('provider_id', $user->id)->first();
+           
+            // // in case approve the user to login from Manager
+            // $findUser->givePermissionTo('can_login_with_line');
+            
             // if user is found, login and redirect to home page
             if($findUser){
+                // check if that user can login to our system
+                $findUser->givePermissionTo('can_login_with_line');
+                
+                if(!$findUser->can('can_login_with_line')){
+                    // redirect to another page
+                    return redirect()->route('register.salon');
+                }
+                // allow authorize to our system
                 Auth::login($findUser);
                 // redirect to home page
                 return redirect()->route('home');
             }
             // if user is not found, create new user
-            $newUser = User::create([
+            $newUser = User::updateOrCreate([
                 'email' => $user->email ?? 'noemail@gmail.com',
-                'name' => $user->name,
+                // 'name' => $user->name,
+                'first_name' => $user->first_name ?? '',
+                'last_name' => $user->last_name ?? '',
                 'provider_id' => $user->id,
                 'provider' => 'line',
                 'password' => bcrypt('my-password'),  // fill password by whatever pattern you choose

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,7 +40,8 @@ class AdminAuthController extends Controller
         // if (!$admin) {
         //     return redirect('/admin/login');
         // }
-        return view('admin.dashboard');
+        $salons = User::all();
+        return view('admin.dashboard',compact('salons'));
     }
 
     public function logout(Request $request)

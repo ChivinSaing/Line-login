@@ -4,7 +4,7 @@ use App\Http\Controllers\SalonController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LineAuthController;
 use App\Http\Controllers\AdminAuthController;
-use App\Http\Controllers\Admin\UserPermissionController;
+use App\Http\Controllers\UserPermissionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,5 +27,12 @@ Route::get('/logout', [LineAuthController::class, 'logout']);
 
 
 Route::get('/salon', [SalonController::class, 'showRegistrationForm'])->name('register.salon');
+Route::post('/salon',[SalonController::class,'register']);
 
 
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/login-permissions', [UserPermissionController::class, 'index'])->name('admin.permissions');
+    Route::post('/admin/login-permissions/{user}/toggle', [UserPermissionController::class, 'toggle'])->name('admin.permissions.toggle');
+});
