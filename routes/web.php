@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SalonController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LineAuthController;
 use App\Http\Controllers\AdminAuthController;
@@ -24,5 +25,7 @@ Route::get('/logout', [LineAuthController::class, 'logout']);
     Route::post('/admin/logout',[AdminAuthController::class,'logout'])->name('admin.logout');
 // });
 
+
+Route::get('/salon', [SalonController::class, 'showRegistrationForm'])->name('register.salon');
 
 
